@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Petualangan Matematika SD</title>
+<meta name="description" content="Game matematika interaktif untuk anak SD - Kurikulum Merdeka">
+<meta name="theme-color" content="#764ba2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Matematika SD">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Comic Sans MS', 'Segoe UI', cursive, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh; display: flex; padding: 20px;
+  }
+  .container {
+    margin: auto; background: #fff; border-radius: 30px; padding: 30px;
+    max-width: 540px; width: 100%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center;
+  }
+  h1 { color: #764ba2; font-size: 22px; margin-bottom: 6px; }
+  h2 { color: #764ba2; font-size: 17px; margin: 10px 0 12px; }
+  .subtitle { color: #888; font-size: 13px; margin-bottom: 18px; }
+  .screen { display: none; }
+  .screen.active { display: block; }
+  .hidden { display: none !important; }
+  input {
+    width: 100%; padding: 14px; font-size: 16px; font-family: inherit;
+    border: 2px solid #ddd; border-radius: 12px; margin-bottom: 12px; outline: none;
+  }
+  input:focus { border-color: #764ba2; }
+  .avatar-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 15px; }
+  .avatar {
+    font-size: 26px; padding: 6px; border: 2px solid #ddd; border-radius: 10px;
+    background: #f7f7ff; cursor: pointer; transition: all 0.15s;
+  }
+  .avatar.selected { border-color: #764ba2; background: #e0d4ff; transform: scale(1.08); }
+  button.btn {
+    padding: 14px 24px; font-size: 16px; font-family: inherit;
+    background: #764ba2; color: #fff; border: none; border-radius: 12px;
+    cursor: pointer; font-weight: bold; width: 100%; margin-top: 8px;
+  }
+  button.btn:hover { background: #5a3a7e; }
+  button.btn.secondary { background: #eee; color: #555; }
+  button.btn.secondary:hover { background: #ddd; }
+  .user-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; max-height: 240px; overflow-y: auto; }
+  .user-item {
+    display: flex; align-items: center; padding: 12px; background: #f7f7ff;
+    border-radius: 12px; cursor: pointer; border: 2px solid transparent;
+    transition: all 0.15s; text-align: left;
+  }
+  .user-item:hover { border-color: #764ba2; transform: translateX(3px); }
+  .user-item .avatar-img { font-size: 32px; margin-right: 12px; }
+  .user-item .name { font-weight: bold; color: #333; }
+  .user-item .meta { font-size: 12px; color: #888; }
+  .grade-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+  .grade-btn {
+    padding: 14px 8px; font-family: inherit; font-size: 13px;
+    border: 2px solid #764ba2; background: #fff; color: #764ba2;
+    border-radius: 12px; cursor: pointer; transition: all 0.15s; font-weight: bold;
+    text-align: left; line-height: 1.3;
+  }
+  .grade-btn:hover { background: #764ba2; color: #fff; transform: scale(1.03); }
+  .grade-btn .grade-num { font-size: 16px; display: block; margin-bottom: 3px; }
+  .grade-btn small { display: block; font-size: 10px; font-weight: normal; opacity: 0.85; }
+  .grade-btn .fase { display: inline-block; font-size: 9px; background: #f093fb; color: #fff; padding: 1px 6px; border-radius: 6px; margin-top: 4px; }
+  .grade-btn:hover .fase { background: #f5576c; }
+  .grade-btn .best { display: block; font-size: 11px; margin-top: 4px; color: #f5576c; font-weight: bold; }
+  .grade-btn:hover .best { color: #ffd1dc; }
+  .stats { display: flex; justify-content: space-around; margin-bottom: 15px; background: #f7f7ff; border-radius: 15px; padding: 12px; }
+  .stat { font-size: 11px; color: #555; }
+  .stat span { display: block; font-size: 20px; font-weight: bold; color: #764ba2; }
+  .progress-bar { height: 12px; background: #eee; border-radius: 10px; margin-bottom: 18px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #f093fb, #f5576c); width: 0%; border-radius: 10px; transition: width 0.4s ease; }
+  .question {
+    font-size: 26px; font-weight: bold; color: #333; margin: 20px 0;
+    min-height: 60px; line-height: 1.35; white-space: pre-line; word-wrap: break-word;
+  }
+  .question.long { font-size: 20px; }
+  .question.very-long { font-size: 17px; }
+  .options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+  .option {
+    padding: 16px 8px; font-size: 22px; font-weight: bold;
+    border: 3px solid #764ba2; background: #fff; color: #764ba2;
+    border-radius: 15px; cursor: pointer; transition: all 0.15s; font-family: inherit;
+    word-wrap: break-word;
+  }
+  .option.text-opt { font-size: 15px; padding: 14px 6px; }
+  .option.long-opt { font-size: 12px; padding: 12px 4px; }
+  .option:hover:not(:disabled) { background: #764ba2; color: #fff; transform: scale(1.05); }
+  .option.correct { background: #4CAF50; color: #fff; border-color: #4CAF50; }
+  .option.wrong { background: #f44336; color: #fff; border-color: #f44336; }
+  .option:disabled { cursor: default; }
+  .feedback { font-size: 17px; font-weight: bold; min-height: 26px; margin-bottom: 10px; }
+  .feedback.good { color: #4CAF50; }
+  .feedback.bad { color: #f44336; }
+  .solution-box {
+    background: #fff9e6; border: 2px dashed #f5c518; border-radius: 12px;
+    padding: 12px 14px; margin-bottom: 12px; text-align: left;
+    animation: slideDown 0.25s ease;
+  }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+  .solution-title { font-size: 12px; color: #b8860b; font-weight: bold; margin-bottom: 6px; }
+  .solution-text { font-size: 13px; color: #555; line-height: 1.6; white-space: pre-line; }
+  button.next-btn { background: linear-gradient(135deg, #4CAF50, #45a049); margin-top: 0; }
+  button.next-btn:hover { background: linear-gradient(135deg, #45a049, #3d8b40); }
+  .game-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 15px; padding-bottom: 12px; border-bottom: 2px solid #eee;
+  }
+  .game-header .user-info { display: flex; align-items: center; gap: 8px; }
+  .game-header .av { font-size: 24px; }
+  .game-header .nm { font-weight: bold; color: #333; font-size: 13px; }
+  .game-header .gr { font-size: 11px; color: #888; }
+  .game-header .exit-btn {
+    padding: 6px 14px; font-family: inherit; font-size: 12px;
+    background: #eee; color: #666; border: none; border-radius: 8px; cursor: pointer;
+  }
+  .game-header .exit-btn:hover { background: #ddd; }
+  .stars { font-size: 42px; margin: 15px 0; }
+  .result-box { background: #f7f7ff; border-radius: 15px; padding: 15px; margin-bottom: 15px; }
+  .result-box p { color: #555; font-size: 15px; margin-bottom: 6px; }
+  .result-box strong { color: #764ba2; font-size: 20px; }
+  .divider { display: flex; align-items: center; margin: 16px 0; color: #aaa; font-size: 12px; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: #eee; margin: 0 10px; }
+  .lb-list { text-align: left; max-height: 320px; overflow-y: auto; margin-bottom: 10px; }
+  .lb-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 9px 12px; border-bottom: 1px solid #eee; font-size: 14px;
+  }
+  .lb-item:last-child { border-bottom: none; }
+  .lb-item .left { display: flex; align-items: center; gap: 8px; }
+  .lb-item .medal { font-size: 18px; min-width: 24px; }
+  .lb-item .name { font-weight: bold; color: #333; }
+  .lb-item .kelas { font-size: 11px; color: #888; }
+  .lb-item .score { font-weight: bold; color: #764ba2; font-size: 16px; }
+  .lb-empty { text-align: center; color: #888; padding: 20px; font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- AUTH -->
+  <div id="authScreen" class="screen active">
+    <h1>🧮 Petualangan Matematika SD</h1>
+    <p class="subtitle">Kurikulum Merdeka · Fase A, B, C</p>
+    <div id="userListSection" class="hidden">
+      <h2>Pilih Pemain</h2>
+      <div class="user-list" id="userList"></div>
+      <div class="divider">atau pemain baru</div>
+    </div>
+    <h2 id="createTitle">Buat Pemain Baru</h2>
+    <input id="nameInput" type="text" placeholder="Nama kamu..." maxlength="20" />
+    <p style="font-size:12px;color:#888;margin-bottom:8px;text-align:left;">Pilih avatar:</p>
+    <div class="avatar-grid" id="avatarGrid"></div>
+    <button class="btn" onclick="createUser()">Mulai Bermain 🚀</button>
+  </div>
+
+  <!-- GRADE -->
+  <div id="gradeScreen" class="screen">
+    <h1>Halo, <span id="greetName"></span>!</h1>
+    <p class="subtitle">Pilih kelas kamu:</p>
+    <div class="grade-grid" id="gradeGrid"></div>
+    <button class="btn" onclick="tampilkanLeaderboard()" style="background:linear-gradient(135deg,#f5c518,#e6b800); color:#5a3a7e; margin-bottom:8px;">🏆 Lihat Peringkat Global</button>
+    <button class="btn secondary" onclick="logout()">🔄 Ganti Pemain</button>
+    <div id="leaderboardArea" class="hidden" style="margin-top:20px;">
+      <h2 style="text-align:left;">🏆 Peringkat Global</h2>
+      <div id="leaderboardList" class="lb-list"></div>
+      <button class="btn secondary" onclick="document.getElementById('leaderboardArea').classList.add('hidden')" style="font-size:13px;">Tutup</button>
+    </div>
+  </div>
+
+  <!-- GAME -->
+  <div id="gameScreen" class="screen">
+    <div class="game-header">
+      <div class="user-info">
+        <span class="av" id="gAvatar">🐯</span>
+        <div>
+          <div class="nm" id="gName">Player</div>
+          <div class="gr" id="gGrade">Kelas 1 SD</div>
+        </div>
+      </div>
+      <button class="exit-btn" onclick="confirmExit()">✕ Keluar</button>
+    </div>
+    <div class="stats">
+      <div class="stat">Skor <span id="scoreEl">0</span></div>
+      <div class="stat">Soal <span id="qNumEl">1/10</span></div>
+      <div class="stat">Benar <span id="correctEl">0</span></div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="question" id="questionEl">Memuat soal...</div>
+    <div class="options" id="optionsEl"></div>
+    <div class="feedback" id="feedbackEl"></div>
+    <div class="solution-box hidden" id="solutionBox">
+      <div class="solution-title">💡 Cara Pengerjaan</div>
+      <div class="solution-text" id="solutionText"></div>
+    </div>
+    <button class="btn next-btn hidden" id="nextBtn" onclick="goNext()">Lanjut →</button>
+  </div>
+
+  <!-- GAME OVER -->
+  <div id="gameOverScreen" class="screen">
+    <h1 id="goTitle">🎉 Selesai!</h1>
+    <div class="stars" id="starsEl"></div>
+    <div class="result-box">
+      <p>Skor: <strong id="finalScore">0</strong></p>
+      <p>Benar: <strong id="finalCorrect">0</strong></p>
+      <p id="newBestMsg" style="color:#f5576c;font-weight:bold;" class="hidden">🏆 Rekor Baru!</p>
+      <p id="submitStatus" style="font-size:12px;color:#888;margin-top:6px;"></p>
+    </div>
+    <button class="btn" onclick="playAgain()">Main Lagi 🔄</button>
+    <button class="btn secondary" onclick="backToGrades()">Pilih Kelas Lain 📚</button>
+  </div>
+
+</div>
+
+<script>
+// ==================== KONFIGURASI ====================
+// GANTI dengan URL Web App Apps Script Anda (diakhiri /exec)
+const API_URL = 'https://script.google.com/macros/s/AKfycbyyp6rWmIR3I0li487YdELtoZt5T29IpnGQS1z9MbhTLIucSgDz27QqjvM631aN7B2zOA/exec';
+
+// ==================== CONSTANTS ====================
+const AVATARS = ['🐯','🦁','🐼','🐸','🦊','🐨','🐧','🦄','🐙','🦋','🐵','🦉'];
+const GRADES = [
+  { id: 1, fase: 'A', desc: 'Bilangan 1–100, pola, bangun dasar' },
+  { id: 2, fase: 'A', desc: 'Operasi sampai 100, bangun ruang' },
+  { id: 3, fase: 'B', desc: 'Kali & bagi, pecahan sederhana, luas' },
+  { id: 4, fase: 'B', desc: 'Bilangan 10.000, pecahan senilai, data' },
+  { id: 5, fase: 'C', desc: 'Pecahan, desimal, KPK/FPB, rasio, sudut' },
+  { id: 6, fase: 'C', desc: 'Operasi campuran, luas gabungan, volume' }
+];
+const TOTAL_QUESTIONS = 10;
+
+// ==================== STATE ====================
+let DB = { users: {}, currentUser: null };
+let selectedAvatar = AVATARS[0];
+let currentGrade = 1;
+let score = 0, questionIndex = 0, correctCount = 0;
+let currentQuestion = null, answerLocked = false, audioCtx;
+
+// ==================== STORAGE ====================
+function saveDB() { localStorage.setItem('mathGameSD_v5', JSON.stringify(DB)); }
+function loadDB() {
+  try {
+    const d = localStorage.getItem('mathGameSD_v5');
+    if (d) DB = JSON.parse(d);
+  } catch(e) { DB = { users: {}, currentUser: null }; }
+  if (!DB.users) DB.users = {};
+}
+
+// ==================== UTILS ====================
+const randInt = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+const gcd = (a, b) => b === 0 ? Math.abs(a) : gcd(b, a % b);
+function simplifyFrac(n, d) {
+  const g = gcd(n, d); n /= g; d /= g;
+  return d === 1 ? String(n) : `${n}/${d}`;
+}
+function getGradeLabel(id) {
+  const fase = id <= 2 ? 'A' : id <= 4 ? 'B' : 'C';
+  return `Kelas ${id} SD · Fase ${fase}`;
+}
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ==================== QUESTION HELPERS ====================
+function numQ(t, a, s) { return { text: t, answer: String(a), type: 'numeric', solution: s || '' }; }
+function fracQ(t, n, d, s) { return { text: t, answer: simplifyFrac(n, d), type: 'fraction', solution: s || '' }; }
+function decQ(t, a, s) { return { text: t, answer: Number(a).toFixed(1), type: 'numeric_dec', solution: s || '' }; }
+function textQ(t, a, dist, s) { return { text: t, answer: a, type: 'text', distractors: dist, solution: s || '' }; }
+
+// ==================== AUTH ====================
+function renderAuthScreen() {
+  const avGrid = document.getElementById('avatarGrid');
+  avGrid.innerHTML = '';
+  AVATARS.forEach(a => {
+    const div = document.createElement('div');
+    div.className = 'avatar' + (a === selectedAvatar ? ' selected' : '');
+    div.textContent = a;
+    div.onclick = () => {
+      selectedAvatar = a;
+      avGrid.querySelectorAll('.avatar').forEach(x => x.classList.remove('selected'));
+      div.classList.add('selected');
+    };
+    avGrid.appendChild(div);
+  });
+  const userList = document.getElementById('userList');
+  const userSection = document.getElementById('userListSection');
+  const names = Object.keys(DB.users);
+  if (names.length > 0) {
+    userSection.classList.remove('hidden');
+    document.getElementById('createTitle').textContent = 'Buat Pemain Baru';
+    userList.innerHTML = '';
+    names.forEach(name => {
+      const u = DB.users[name];
+      const totalBest = Object.values(u.stats || {}).reduce((m, s) => Math.max(m, s.best || 0), 0);
+      const div = document.createElement('div');
+      div.className = 'user-item';
+      div.innerHTML = `<div class="avatar-img"></div><div class="info"><div class="name"></div><div class="meta">Best: ${totalBest} · Main: ${u.totalGames || 0}x</div></div><div style="font-size:20px;color:#764ba2;">›</div>`;
+      div.querySelector('.avatar-img').textContent = u.avatar;
+      div.querySelector('.name').textContent = name;
+      div.onclick = () => loginUser(name);
+      userList.appendChild(div);
+    });
+  } else {
+    userSection.classList.add('hidden');
+    document.getElementById('createTitle').textContent = 'Buat Pemain Pertama';
+  }
+}
+function createUser() {
+  const name = document.getElementById('nameInput').value.trim();
+  if (!name) return alert('Masukkan nama kamu dulu ya!');
+  if (name.length < 2) return alert('Nama minimal 2 huruf');
+  if (DB.users[name]) return alert('Nama sudah dipakai, coba yang lain');
+  DB.users[name] = { avatar: selectedAvatar, stats: {}, totalGames: 0, createdAt: Date.now() };
+  saveDB();
+  document.getElementById('nameInput').value = '';
+  loginUser(name);
+}
+function loginUser(name) {
+  DB.currentUser = name; saveDB();
+  document.getElementById('greetName').textContent = name;
+  showGradeSelection();
+}
+function logout() {
+  DB.currentUser = null; saveDB();
+  showScreen('authScreen'); renderAuthScreen();
+}
+function showGradeSelection() {
+  const user = DB.users[DB.currentUser];
+  const grid = document.getElementById('gradeGrid');
+  grid.innerHTML = '';
+  GRADES.forEach(g => {
+    const btn = document.createElement('button');
+    btn.className = 'grade-btn';
+    const stat = user.stats[g.id];
+    const bestHtml = stat ? `<span class="best">⭐ Rekor: ${stat.best}</span>` : '';
+    btn.innerHTML = `<span class="grade-num">📘 Kelas ${g.id} SD</span><small>${g.desc}</small><span class="fase">Fase ${g.fase}</span>${bestHtml}`;
+    btn.onclick = () => startGame(g.id);
+    grid.appendChild(btn);
+  });
+  document.getElementById('leaderboardArea').classList.add('hidden');
+  showScreen('gradeScreen');
+}
+
+// ==================== QUESTION GENERATORS ====================
+function genKelas1() {
+  const r = Math.random();
+  if (r < 0.30) { const a = randInt(1,10), b = randInt(1,10); return numQ(`${a} + ${b} = ?`, a+b, `Tambahkan:\n${a} + ${b} = ${a+b}`); }
+  if (r < 0.55) { const a = randInt(3,20), b = randInt(1,a); return numQ(`${a} − ${b} = ?`, a-b, `Kurangkan:\n${a} − ${b} = ${a-b}`); }
+  if (r < 0.68) {
+    const a = randInt(1,50), b = randInt(1,50);
+    const op = a > b ? '>' : a < b ? '<' : '=';
+    const desc = a > b ? 'lebih besar' : a < b ? 'lebih kecil' : 'sama dengan';
+    return textQ(`Isilah titik dengan tanda yang tepat:\n${a} ... ${b}`, op, ['>','<','='], `${a} ${desc} ${b}\nJadi ${a} ${op} ${b}`);
+  }
+  if (r < 0.82) {
+    const step = randInt(2,5), start = randInt(1,5), last = start + step*3;
+    return numQ(`Lanjutkan pola:\n${start}, ${start+step}, ${start+step*2}, ${start+step*3}, ...`, last+step,
+      `Pola bertambah ${step}:\n${last} + ${step} = ${last+step}`);
+  }
+  if (r < 0.92) {
+    const shapes = [
+      { q: 'Bangun datar yang memiliki 3 sisi disebut...', a: 'Segitiga', d: ['Persegi','Lingkaran','Trapesium'], s: 'Segitiga memiliki 3 sisi dan 3 sudut.' },
+      { q: 'Bangun datar dengan 4 sisi sama panjang disebut...', a: 'Persegi', d: ['Segitiga','Lingkaran','Oval'], s: 'Persegi memiliki 4 sisi sama panjang dan 4 sudut siku-siku.' },
+      { q: 'Bangun datar berbentuk bulat penuh disebut...', a: 'Lingkaran', d: ['Persegi','Segitiga','Belah Ketupat'], s: 'Lingkaran berbentuk bulat penuh tanpa sudut.' },
+      { q: 'Bangun datar dengan 4 sisi (2 panjang, 2 pendek) disebut...', a: 'Persegi Panjang', d: ['Segitiga','Lingkaran','Persegi'], s: 'Persegi panjang memiliki 2 pasang sisi berhadapan yang sama panjang.' }
+    ];
+    const sh = shapes[randInt(0, 3)];
+    return textQ(sh.q, sh.a, sh.d, sh.s);
+  }
+  const nums = [randInt(1,30), randInt(31,60), randInt(61,100), randInt(101,150)];
+  const maxN = Math.max(...nums);
+  const sorted = [...nums].sort((a,b) => a-b);
+  return textQ(`Manakah bilangan terbesar?\n${nums.join(' , ')}`, String(maxN),
+    nums.filter(n => n !== maxN).map(String),
+    `Urutkan dari terkecil:\n${sorted.join(' < ')}\nTerbesar = ${maxN}`);
+}
+
+function genKelas2() {
+  const r = Math.random();
+  if (r < 0.28) { const a = randInt(10,60), b = randInt(10,40); return numQ(`${a} + ${b} = ?`, a+b, `${a} + ${b} = ${a+b}`); }
+  if (r < 0.52) { const a = randInt(20,99), b = randInt(10,a); return numQ(`${a} − ${b} = ?`, a-b, `${a} − ${b} = ${a-b}`); }
+  if (r < 0.65) {
+    const step = [5,10,100][randInt(0,2)];
+    const start = step * randInt(1,5);
+    const last = start + step*3;
+    return numQ(`Lanjutkan pola:\n${start}, ${start+step}, ${start+step*2}, ${start+step*3}, ...`, last+step, `Pola lompat ${step}:\n${last} + ${step} = ${last+step}`);
+  }
+  if (r < 0.78) {
+    const q = [
+      { q: 'Kubus memiliki berapa sisi?', a: '6', d: ['4','8','12'], s: 'Kubus memiliki 6 sisi persegi sama besar.' },
+      { q: 'Balok memiliki berapa sisi?', a: '6', d: ['4','8','10'], s: 'Balok memiliki 6 sisi (3 pasang berhadapan).' },
+      { q: 'Bola memiliki berapa sisi datar?', a: '0', d: ['1','2','4'], s: 'Bola tidak memiliki sisi datar.' },
+      { q: 'Tabung memiliki berapa sisi lengkung?', a: '1', d: ['0','2','3'], s: 'Tabung memiliki 1 sisi lengkung, 2 sisi datar.' }
+    ][randInt(0,3)];
+    return textQ(q.q, q.a, q.d, q.s);
+  }
+  if (r < 0.90) {
+    const q = [
+      { q: '1 meter = ... cm', a: '100', d: ['10','1000','50'], s: '1 m = 100 cm' },
+      { q: '1 jam = ... menit', a: '60', d: ['30','100','24'], s: '1 jam = 60 menit' },
+      { q: '1 kg = ... gram', a: '1000', d: ['100','10','500'], s: '1 kg = 1000 gram' }
+    ][randInt(0,2)];
+    return textQ(q.q, q.a, q.d, q.s);
+  }
+  const nums = [randInt(50,90), randInt(91,150), randInt(151,300), randInt(301,500)];
+  const minN = Math.min(...nums);
+  const sorted = [...nums].sort((a,b) => a-b);
+  return textQ(`Manakah bilangan terkecil?\n${nums.join(' , ')}`, String(minN),
+    nums.filter(n => n !== minN).map(String),
+    `Urutkan: ${sorted.join(' < ')}\nTerkecil = ${minN}`);
+}
+
+function genKelas3() {
+  const r = Math.random();
+  if (r < 0.22) { const a = randInt(2,10), b = randInt(2,10); return numQ(`${a} × ${b} = ?`, a*b, `Tabel perkalian:\n${a} × ${b} = ${a*b}`); }
+  if (r < 0.42) {
+    const b = randInt(2,9), ans = randInt(2,10);
+    return numQ(`${b*ans} ÷ ${b} = ?`, ans, `Kebalikan perkalian:\n${b} × ${ans} = ${b*ans}\nJadi ${b*ans} ÷ ${b} = ${ans}`);
+  }
+  if (r < 0.55) {
+    const x = randInt(2,20), a = randInt(2,20);
+    if (Math.random() < 0.5) return numQ(`□ + ${a} = ${x+a}, maka □ = ?`, x, `□ = ${x+a} − ${a} = ${x}`);
+    return numQ(`□ − ${a} = ${x}, maka □ = ?`, x+a, `□ = ${x} + ${a} = ${x+a}`);
+  }
+  if (r < 0.68) {
+    const den = [2,3,4][randInt(0,2)], whole = den * randInt(2,6), ans = whole/den;
+    return numQ(`Berapakah 1/${den} dari ${whole}?`, ans, `1/${den} artinya dibagi ${den}:\n${whole} ÷ ${den} = ${ans}`);
+  }
+  if (r < 0.80) {
+    const s = randInt(2,8);
+    return numQ(`Persegi dengan sisi ${s} cm.\nLuasnya = ... cm²`, s*s, `Luas = sisi × sisi\n= ${s} × ${s} = ${s*s} cm²`);
+  }
+  if (r < 0.92) {
+    const q = [
+      { q: 'Segitiga memiliki berapa sisi?', a: '3', d: ['2','4','5'], s: 'Segitiga = 3 sisi.' },
+      { q: 'Persegi memiliki berapa sudut?', a: '4', d: ['3','5','6'], s: 'Persegi = 4 sudut siku-siku.' },
+      { q: 'Segitiga sama sisi memiliki berapa sudut sama besar?', a: '3', d: ['2','4','1'], s: 'Segitiga sama sisi = 3 sudut sama (60°).' }
+    ][randInt(0,2)];
+    return textQ(q.q, q.a, q.d, q.s);
+  }
+  const a = randInt(100,800), b = randInt(100,200);
+  return numQ(`${a} + ${b} = ?`, a+b, `${a} + ${b} = ${a+b}`);
+}
+
+function genKelas4() {
+  const r = Math.random();
+  if (r < 0.22) { const a = randInt(1000,5000), b = randInt(500,3000); return numQ(`${a} + ${b} = ?`, a+b, `${a} + ${b} = ${a+b}`); }
+  if (r < 0.40) {
+    const a = randInt(11,99), b = randInt(2,9);
+    const tens = Math.floor(a/10)*10, ones = a%10;
+    return numQ(`${a} × ${b} = ?`, a*b, `Pecah ${a} = ${tens} + ${ones}:\n${tens} × ${b} = ${tens*b}\n${ones} × ${b} = ${ones*b}\nJumlah = ${a*b}`);
+  }
+  if (r < 0.55) {
+    const b = randInt(3,9), ans = randInt(11,40);
+    return numQ(`${b*ans} ÷ ${b} = ?`, ans, `${b} × ${ans} = ${b*ans}\n${b*ans} ÷ ${b} = ${ans}`);
+  }
+  if (r < 0.68) {
+    const n = randInt(1,4), d = randInt(n+1,6), k = randInt(2,3);
+    return textQ(`Pecahan senilai dengan ${n}/${d} adalah...`, `${n*k}/${d*k}`,
+      [`${n+1}/${d+1}`, `${n*k+1}/${d*k}`, `${n}/${d*k}`],
+      `Kalikan pembilang & penyebut dengan ${k}:\n${n}/${d} = ${n*k}/${d*k}`);
+  }
+  if (r < 0.78) {
+    const x = randInt(5,30), a = randInt(2,9), b = randInt(1,20);
+    return numQ(`${a} × □ + ${b} = ${a*x+b}\nmaka □ = ?`, x,
+      `${a} × □ = ${a*x+b} − ${b} = ${a*x}\n□ = ${a*x} ÷ ${a} = ${x}`);
+  }
+  if (r < 0.88) {
+    const p = randInt(5,15), l = randInt(3,10);
+    if (Math.random() < 0.5) return numQ(`Persegi panjang p=${p} cm, l=${l} cm\nLuas = ... cm²`, p*l, `L = p × l = ${p} × ${l} = ${p*l} cm²`);
+    return numQ(`Persegi panjang p=${p} cm, l=${l} cm\nKeliling = ... cm`, 2*(p+l), `K = 2 × (p + l) = 2 × (${p} + ${l}) = ${2*(p+l)} cm`);
+  }
+  const apel = randInt(4,6), pisang = randInt(1,apel-1), mangga = randInt(1,apel-1);
+  const emoji = (n, e) => e.repeat(n);
+  return textQ(
+    `Piktogram buah (1 gambar = 1 buah):\n🍎 ${emoji(apel,'🍎')}\n🍌 ${emoji(pisang,'🍌')}\n🥭 ${emoji(mangga,'🥭')}\nBuah apa yang paling banyak?`,
+    'Apel', ['Pisang','Mangga','Semua sama'],
+    `Hitung:\nApel = ${apel}, Pisang = ${pisang}, Mangga = ${mangga}\nTerbanyak = Apel (${apel})`
+  );
+}
+
+function genKelas5() {
+  const r = Math.random();
+  if (r < 0.18) {
+    const d1 = randInt(2,6), d2 = d1*randInt(1,2);
+    const n1 = randInt(1,d1-1), n2 = randInt(1,d2-1);
+    const num = n1*d2 + n2*d1, den = d1*d2;
+    const simp = simplifyFrac(num, den);
+    return fracQ(`${n1}/${d1} + ${n2}/${d2} = ?`, num, den,
+      `Penyebut sama jadi ${den}:\n${n1*d2}/${den} + ${n2*d1}/${den} = ${num}/${den}${simp === `${num}/${den}` ? '' : ' = ' + simp}`);
+  }
+  if (r < 0.32) {
+    const d = randInt(2,8), a = randInt(2,d-1), b = randInt(1,a-1);
+    return fracQ(`${a}/${d} − ${b}/${d} = ?`, a-b, d, `${a}/${d} − ${b}/${d} = (${a-b})/${d}`);
+  }
+  if (r < 0.44) {
+    const ai = randInt(10,90), bi = randInt(10,90);
+    const a = ai/10, b = bi/10, sum = (ai+bi)/10;
+    return decQ(`${a.toFixed(1)} + ${b.toFixed(1)} = ?`, sum, `${a.toFixed(1)} + ${b.toFixed(1)} = ${sum.toFixed(1)}`);
+  }
+  if (r < 0.56) {
+    const a = randInt(2,6), b = randInt(2,6);
+    const kpk = a*b/gcd(a,b);
+    return numQ(`KPK dari ${a} dan ${b} adalah...`, kpk,
+      `Kelipatan ${a}: ${[1,2,3,4,5].map(k=>a*k).join(', ')}, ...\nKelipatan ${b}: ${[1,2,3,4,5].map(k=>b*k).join(', ')}, ...\nKPK = ${kpk}`);
+  }
+  if (r < 0.68) {
+    const g = randInt(2,6), a = g*randInt(2,4), b = g*randInt(2,4);
+    return numQ(`FPB dari ${a} dan ${b} adalah...`, gcd(a,b), `FPB = faktor terbesar bersama = ${gcd(a,b)}`);
+  }
+  if (r < 0.78) {
+    const k = randInt(2,5), ra = randInt(2,4), rb = randInt(2,4);
+    const a = ra*k, b = rb*k;
+    return numQ(`Jika a : b = ${ra} : ${rb}, dan a = ${a},\nmaka b = ?`, b,
+      `Skala = ${a} ÷ ${ra} = ${k}\nb = ${rb} × ${k} = ${b}`);
+  }
+  if (r < 0.88) {
+    const s1 = randInt(30,80), s2 = randInt(30,150-s1);
+    return numQ(`Segitiga memiliki sudut ${s1}° dan ${s2}°.\nSudut ketiga = ...°`, 180-s1-s2,
+      `Jumlah sudut = 180°\n${180}° − ${s1}° − ${s2}° = ${180-s1-s2}°`);
+  }
+  const sisi = randInt(5,15);
+  return numQ(`Persegi dengan sisi ${sisi} cm.\nLuas = ... cm²`, sisi*sisi, `L = ${sisi} × ${sisi} = ${sisi*sisi} cm²`);
+}
+
+function genKelas6() {
+  const r = Math.random();
+  if (r < 0.15) {
+    const d1 = randInt(3,8), d2 = randInt(3,8);
+    const n1 = randInt(1,d1-1), n2 = randInt(1,d2-1);
+    const num = n1*d2 + n2*d1, den = d1*d2;
+    const simp = simplifyFrac(num, den);
+    return fracQ(`${n1}/${d1} + ${n2}/${d2} = ?`, num, den,
+      `Penyebut = ${den}:\n${n1*d2}/${den} + ${n2*d1}/${den} = ${num}/${den}${simp === `${num}/${den}` ? '' : ' = ' + simp}`);
+  }
+  if (r < 0.28) {
+    const ai = randInt(11,45), b = randInt(2,9);
+    const a = ai/10, prod = (ai*b)/10;
+    return decQ(`${a.toFixed(1)} × ${b} = ?`, prod, `${ai} × ${b} = ${ai*b}\n${ai*b} ÷ 10 = ${prod.toFixed(1)}`);
+  }
+  if (r < 0.40) {
+    const a = randInt(4,12), b = randInt(4,12);
+    return numQ(`KPK dari ${a} dan ${b} adalah...`, a*b/gcd(a,b),
+      `KPK = (${a} × ${b}) ÷ FPB(${gcd(a,b)})\n= ${a*b} ÷ ${gcd(a,b)} = ${a*b/gcd(a,b)}`);
+  }
+  if (r < 0.52) {
+    const ra = randInt(2,8), rb = randInt(2,8), k = randInt(2,5);
+    const a = ra*k, b = rb*k;
+    return numQ(`Perbandingan apel : jeruk = ${ra} : ${rb}.\nJika ada ${a} apel, ada berapa jeruk?`, b,
+      `Skala = ${a} ÷ ${ra} = ${k}\nJeruk = ${rb} × ${k} = ${b}`);
+  }
+  if (r < 0.64) {
+    const p = randInt(6,12), l = randInt(3,6), s = randInt(2,5);
+    return numQ(`Bangun gabungan:\nPersegi panjang ${p}×${l} + persegi sisi ${s}.\nLuas total = ... cm²`, p*l + s*s,
+      `Luas PP = ${p} × ${l} = ${p*l}\nLuas persegi = ${s} × ${s} = ${s*s}\nTotal = ${p*l+s*s} cm²`);
+  }
+  if (r < 0.76) {
+    const s1 = randInt(40,90), s2 = randInt(40,130-s1);
+    return numQ(`Sudut segitiga: ${s1}° dan ${s2}°.\nSudut ketiga = ...°`, 180-s1-s2,
+      `180° − ${s1}° − ${s2}° = ${180-s1-s2}°`);
+  }
+  if (r < 0.88) {
+    const p = randInt(3,8), l = randInt(2,6), t = randInt(2,5);
+    return numQ(`Balok: panjang ${p} cm, lebar ${l} cm, tinggi ${t} cm.\nVolume = ... cm³`, p*l*t,
+      `V = p × l × t = ${p} × ${l} × ${t} = ${p*l*t} cm³`);
+  }
+  const x = randInt(1,8), y = randInt(1,8);
+  return textQ(`Titik (${x}, ${y}) berada di kuadran berapa?`, 'Kuadran I', ['Kuadran II','Kuadran III','Kuadran IV'],
+    `x = ${x} positif, y = ${y} positif ⇒ Kuadran I`);
+}
+
+function generateQuestion(g) {
+  return ({ 1: genKelas1, 2: genKelas2, 3: genKelas3, 4: genKelas4, 5: genKelas5, 6: genKelas6 }[g] || genKelas1)();
+}
+
+// ==================== OPTIONS ====================
+function generateNumericOptions(n) {
+  const opts = new Set([String(n)]);
+  const maxOff = Math.max(3, Math.ceil(Math.abs(n) * 0.25));
+  let t = 0;
+  while (opts.size < 4 && t < 100) {
+    t++;
+    let off = randInt(1, maxOff);
+    if (Math.random() < 0.5) off = -off;
+    opts.add(String(n + off));
+  }
+  while (opts.size < 4) opts.add(String(n + opts.size));
+  return [...opts].sort(() => Math.random() - 0.5);
+}
+function generateOptions(q) {
+  const { answer, type } = q;
+  if (type === 'text') return [answer, ...q.distractors].slice(0,4).sort(() => Math.random() - 0.5);
+  if (type === 'fraction') {
+    if (!answer.includes('/')) return generateNumericOptions(parseInt(answer));
+    const opts = new Set([answer]);
+    let t = 0;
+    while (opts.size < 4 && t < 200) {
+      t++;
+      const dd = randInt(2,9), nn = randInt(1, dd*2);
+      const f = simplifyFrac(nn, dd);
+      if (f !== answer && f.includes('/') && !f.startsWith('-')) opts.add(f);
+    }
+    while (opts.size < 4) opts.add(`${randInt(2,9)}/${randInt(3,9)}`);
+    return [...opts].sort(() => Math.random() - 0.5);
+  }
+  if (type === 'numeric_dec') {
+    const n = parseFloat(answer);
+    const opts = new Set([answer]);
+    let t = 0;
+    while (opts.size < 4 && t < 100) {
+      t++;
+      let off = randInt(1,15)/10;
+      if (Math.random() < 0.5) off = -off;
+      const c = Math.round((n + off) * 10) / 10;
+      if (c >= 0 && c.toFixed(1) !== answer) opts.add(c.toFixed(1));
+    }
+    while (opts.size < 4) opts.add((n + opts.size*0.1).toFixed(1));
+    return [...opts].sort(() => Math.random() - 0.5);
+  }
+  return generateNumericOptions(parseInt(answer));
+}
+
+// ==================== GAME ====================
+function startGame(gradeId) {
+  currentGrade = gradeId;
+  score = 0; questionIndex = 0; correctCount = 0;
+  const user = DB.users[DB.currentUser];
+  document.getElementById('gAvatar').textContent = user.avatar;
+  document.getElementById('gName').textContent = DB.currentUser;
+  document.getElementById('gGrade').textContent = getGradeLabel(gradeId);
+  showScreen('gameScreen');
+  nextQuestion();
+}
+function nextQuestion() {
+  answerLocked = false;
+  document.getElementById('feedbackEl').textContent = '';
+  document.getElementById('feedbackEl').className = 'feedback';
+  document.getElementById('solutionBox').classList.add('hidden');
+  document.getElementById('nextBtn').classList.add('hidden');
+
+  currentQuestion = generateQuestion(currentGrade);
+  const qEl = document.getElementById('questionEl');
+  qEl.textContent = currentQuestion.text;
+  qEl.classList.remove('long', 'very-long');
+  if (currentQuestion.text.length > 55) qEl.classList.add('very-long');
+  else if (currentQuestion.text.length > 30) qEl.classList.add('long');
+
+  const options = generateOptions(currentQuestion);
+  const optEl = document.getElementById('optionsEl');
+  optEl.innerHTML = '';
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    if (opt.length > 8) btn.classList.add('long-opt');
+    else if (opt.length > 4) btn.classList.add('text-opt');
+    btn.textContent = opt;
+    btn.onclick = () => handleAnswer(btn, opt);
+    optEl.appendChild(btn);
+  });
+  updateGameStats();
+}
+function updateGameStats() {
+  document.getElementById('scoreEl').textContent = score;
+  document.getElementById('qNumEl').textContent = `${Math.min(questionIndex+1, TOTAL_QUESTIONS)}/${TOTAL_QUESTIONS}`;
+  document.getElementById('correctEl').textContent = correctCount;
+  document.getElementById('progressFill').style.width = (questionIndex / TOTAL_QUESTIONS * 100) + '%';
+}
+function handleAnswer(btn, chosen) {
+  if (answerLocked) return;
+  answerLocked = true;
+  const allBtns = document.querySelectorAll('#optionsEl .option');
+  allBtns.forEach(b => b.disabled = true);
+  const feedback = document.getElementById('feedbackEl');
+  const isCorrect = chosen === currentQuestion.answer;
+  if (isCorrect) {
+    btn.classList.add('correct');
+    correctCount++;
+    score += 10 + questionIndex;
+    feedback.textContent = '🎉 Benar! Hebat!';
+    feedback.className = 'feedback good';
+    playSound(880);
+  } else {
+    btn.classList.add('wrong');
+    allBtns.forEach(b => { if (b.textContent === currentQuestion.answer) b.classList.add('correct'); });
+    feedback.textContent = `❌ Belum tepat. Jawaban: ${currentQuestion.answer}`;
+    feedback.className = 'feedback bad';
+    playSound(220);
+  }
+  updateGameStats();
+  if (currentQuestion.solution) {
+    document.getElementById('solutionText').textContent = currentQuestion.solution;
+    document.getElementById('solutionBox').classList.remove('hidden');
+  }
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.classList.remove('hidden');
+  nextBtn.textContent = (questionIndex === TOTAL_QUESTIONS - 1) ? 'Lihat Hasil 🏁' : 'Lanjut →';
+}
+function goNext() {
+  questionIndex++;
+  if (questionIndex >= TOTAL_QUESTIONS) endGame();
+  else nextQuestion();
+}
+function endGame() {
+  const user = DB.users[DB.currentUser];
+  if (!user.stats) user.stats = {};
+  if (!user.stats[currentGrade]) user.stats[currentGrade] = { best: 0, plays: 0, correct: 0 };
+  const oldBest = user.stats[currentGrade].best || 0;
+  const isNewBest = score > oldBest;
+  user.stats[currentGrade].plays++;
+  user.stats[currentGrade].correct += correctCount;
+  if (isNewBest) user.stats[currentGrade].best = score;
+  user.totalGames = (user.totalGames || 0) + 1;
+  saveDB();
+
+  document.getElementById('finalScore').textContent = score;
+  document.getElementById('finalCorrect').textContent = `${correctCount} / ${TOTAL_QUESTIONS}`;
+  const ratio = correctCount / TOTAL_QUESTIONS;
+  let stars = '😢';
+  if (ratio >= 0.9) stars = '⭐⭐⭐';
+  else if (ratio >= 0.7) stars = '⭐⭐';
+  else if (ratio >= 0.4) stars = '⭐';
+  document.getElementById('starsEl').textContent = stars;
+  document.getElementById('newBestMsg').classList.toggle('hidden', !(isNewBest && score > 0));
+  document.getElementById('goTitle').textContent = ratio >= 0.7 ? '🎉 Hebat Sekali!' : ratio >= 0.4 ? '👍 Bagus!' : '💪 Ayo Coba Lagi!';
+
+  // Kirim ke Google Sheets
+  const statusEl = document.getElementById('submitStatus');
+  if (score > 0) {
+    statusEl.textContent = '⏳ Mengirim skor ke peringkat global...';
+    kirimSkorKeSheets(DB.currentUser, currentGrade, score, correctCount, (ok) => {
+      statusEl.textContent = ok ? '✅ Skor terkirim ke peringkat global!' : '⚠️ Gagal mengirim skor (mungkin offline).';
+    });
+  } else {
+    statusEl.textContent = '';
+  }
+
+  showScreen('gameOverScreen');
+}
+function playAgain() { startGame(currentGrade); }
+function backToGrades() { showGradeSelection(); }
+function confirmExit() {
+  if (confirm('Keluar dari permainan? Skor tidak akan disimpan.')) showGradeSelection();
+}
+
+// ==================== LEADERBOARD API ====================
+function kirimSkorKeSheets(nama, kelas, skor, benar, callback) {
+  if (!API_URL || API_URL.includes('GANTI_DENGAN')) {
+    console.warn('API_URL belum diset');
+    if (callback) callback(false);
+    return;
+  }
+  const payload = JSON.stringify({
+    nama, kelas: `Kelas ${kelas} SD`, skor, benar
+  });
+  fetch(API_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: payload
+  }).then(() => { if (callback) callback(true); })
+    .catch(err => { console.warn('Kirim gagal:', err); if (callback) callback(false); });
+}
+
+function muatLeaderboard(callback) {
+  if (!API_URL || API_URL.includes('GANTI_DENGAN')) {
+    callback(null);
+    return;
+  }
+  const oldS = document.getElementById('jsonp-lb');
+  if (oldS) oldS.remove();
+  const cbName = 'lbCb_' + Date.now();
+  window[cbName] = function(data) {
+    callback(data);
+    delete window[cbName];
+    const s = document.getElementById('jsonp-lb');
+    if (s) s.remove();
+  };
+  const script = document.createElement('script');
+  script.id = 'jsonp-lb';
+  script.src = `${API_URL}?callback=${cbName}&limit=20`;
+  script.onerror = () => { callback(null); delete window[cbName]; script.remove(); };
+  document.body.appendChild(script);
+}
+
+function tampilkanLeaderboard() {
+  const area = document.getElementById('leaderboardArea');
+  const list = document.getElementById('leaderboardList');
+  area.classList.remove('hidden');
+  list.innerHTML = '<p class="lb-empty">Memuat...</p>';
+  // Scroll ke area
+  setTimeout(() => area.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+
+  muatLeaderboard(data => {
+    if (!data || data.length === 0) {
+      list.innerHTML = '<p class="lb-empty">Belum ada data peringkat.<br>Main dulu yuk!</p>';
+      return;
+    }
+    list.innerHTML = data.map((item, i) => {
+      const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `<span style="min-width:24px;display:inline-block;text-align:center;color:#888;">${i+1}.</span>`;
+      return `<div class="lb-item">
+        <div class="left">
+          <span class="medal">${medal}</span>
+          <div>
+            <div class="name">${escapeHtml(item.nama)}</div>
+            <div class="kelas">${escapeHtml(item.kelas || '-')}</div>
+          </div>
+        </div>
+        <div class="score">${item.skor}</div>
+      </div>`;
+    }).join('');
+  });
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ==================== SOUND ====================
+function playSound(freq) {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.frequency.value = freq; osc.type = 'sine';
+    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+  } catch(e) {}
+}
+
+// ==================== SERVICE WORKER ====================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+
+// ==================== INIT ====================
+loadDB();
+renderAuthScreen();
+document.getElementById('nameInput').addEventListener('keypress', e => {
+  if (e.key === 'Enter') createUser();
+});
+</script>
+</body>
+</html>
