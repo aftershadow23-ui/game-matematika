@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Petualangan Matematika SD</title>
-<meta name="description" content="Game matematika interaktif untuk anak SD - Kurikulum Merdeka">
+<meta name="description" content="Game matematika interaktif untuk anak SD">
 <meta name="theme-color" content="#764ba2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -60,31 +60,41 @@
   .user-item .avatar-img { font-size: 32px; margin-right: 12px; }
   .user-item .name { font-weight: bold; color: #333; }
   .user-item .meta { font-size: 12px; color: #888; }
-  .grade-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
-  .grade-btn {
-    padding: 14px 8px; font-family: inherit; font-size: 13px;
+  
+  .menu-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+  .menu-btn {
+    padding: 16px; font-family: inherit; font-size: 16px;
     border: 2px solid #764ba2; background: #fff; color: #764ba2;
     border-radius: 12px; cursor: pointer; transition: all 0.15s; font-weight: bold;
-    text-align: left; line-height: 1.3;
+    text-align: left; display: flex; justify-content: space-between; align-items: center;
   }
-  .grade-btn:hover { background: #764ba2; color: #fff; transform: scale(1.03); }
-  .grade-btn .grade-num { font-size: 16px; display: block; margin-bottom: 3px; }
-  .grade-btn small { display: block; font-size: 10px; font-weight: normal; opacity: 0.85; }
-  .grade-btn .fase { display: inline-block; font-size: 9px; background: #f093fb; color: #fff; padding: 1px 6px; border-radius: 6px; margin-top: 4px; }
-  .grade-btn:hover .fase { background: #f5576c; }
-  .grade-btn .best { display: block; font-size: 11px; margin-top: 4px; color: #f5576c; font-weight: bold; }
-  .grade-btn:hover .best { color: #ffd1dc; }
+  .menu-btn:hover { background: #764ba2; color: #fff; transform: scale(1.02); box-shadow: 0 4px 12px rgba(118, 75, 162, 0.3); }
+  .menu-btn .grade-info { flex: 1; }
+  .menu-btn .grade-num { font-size: 18px; display: block; margin-bottom: 4px; }
+  .menu-btn small { display: block; font-size: 12px; font-weight: normal; opacity: 0.85; margin-top: 4px;}
+  .menu-btn .best { display: block; font-size: 12px; margin-top: 6px; color: #f5576c; font-weight: bold; }
+  .menu-btn:hover .best { color: #ffd1dc; }
+  .menu-btn .arrow { font-size: 20px; opacity: 0.5; }
+  .menu-btn:hover .arrow { opacity: 1; }
+
+  .level-beginner { border-color: #10B981 !important; color: #065F46 !important; }
+  .level-beginner:hover { background: #10B981 !important; color: #fff !important; }
+  .level-intermediate { border-color: #F59E0B !important; color: #92400E !important; }
+  .level-intermediate:hover { background: #F59E0B !important; color: #fff !important; }
+  .level-advanced { border-color: #EF4444 !important; color: #991B1B !important; }
+  .level-advanced:hover { background: #EF4444 !important; color: #fff !important; }
+
   .stats { display: flex; justify-content: space-around; margin-bottom: 15px; background: #f7f7ff; border-radius: 15px; padding: 12px; }
   .stat { font-size: 11px; color: #555; }
   .stat span { display: block; font-size: 20px; font-weight: bold; color: #764ba2; }
   .progress-bar { height: 12px; background: #eee; border-radius: 10px; margin-bottom: 18px; overflow: hidden; }
   .progress-fill { height: 100%; background: linear-gradient(90deg, #f093fb, #f5576c); width: 0%; border-radius: 10px; transition: width 0.4s ease; }
   .question {
-    font-size: 26px; font-weight: bold; color: #333; margin: 20px 0;
+    font-size: 24px; font-weight: bold; color: #333; margin: 20px 0;
     min-height: 60px; line-height: 1.35; white-space: pre-line; word-wrap: break-word;
   }
-  .question.long { font-size: 20px; }
-  .question.very-long { font-size: 17px; }
+  .question.long { font-size: 18px; }
+  .question.very-long { font-size: 16px; }
   .options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
   .option {
     padding: 16px 8px; font-size: 22px; font-weight: bold;
@@ -111,6 +121,7 @@
   .solution-text { font-size: 13px; color: #555; line-height: 1.6; white-space: pre-line; }
   button.next-btn { background: linear-gradient(135deg, #4CAF50, #45a049); margin-top: 0; }
   button.next-btn:hover { background: linear-gradient(135deg, #45a049, #3d8b40); }
+  
   .game-header {
     display: flex; align-items: center; justify-content: space-between;
     margin-bottom: 15px; padding-bottom: 12px; border-bottom: 2px solid #eee;
@@ -147,7 +158,7 @@
 <body>
 <div class="container">
 
-  <!-- AUTH -->
+  <!-- SCREEN 1: AUTH -->
   <div id="authScreen" class="screen active">
     <h1>🧮 Petualangan Matematika SD</h1>
     <p class="subtitle">Kurikulum Merdeka · Fase A, B, C</p>
@@ -163,11 +174,11 @@
     <button class="btn" onclick="createUser()">Mulai Bermain 🚀</button>
   </div>
 
-  <!-- GRADE -->
-  <div id="gradeScreen" class="screen">
-    <h1>Halo, <span id="greetName"></span>!</h1>
-    <p class="subtitle">Pilih kelas kamu:</p>
-    <div class="grade-grid" id="gradeGrid"></div>
+  <!-- SCREEN 2: CLASS SELECTION -->
+  <div id="classScreen" class="screen">
+    <h1>Halo, <span id="greetNameClass"></span>!</h1>
+    <p class="subtitle">Pilih Kelas Kamu:</p>
+    <div class="menu-grid" id="classGrid"></div>
     <button class="btn" onclick="tampilkanLeaderboard()" style="background:linear-gradient(135deg,#f5c518,#e6b800); color:#5a3a7e; margin-bottom:8px;">🏆 Lihat Peringkat Global</button>
     <button class="btn secondary" onclick="logout()">🔄 Ganti Pemain</button>
     <div id="leaderboardArea" class="hidden" style="margin-top:20px;">
@@ -177,14 +188,22 @@
     </div>
   </div>
 
-  <!-- GAME -->
+  <!-- SCREEN 3: LEVEL SELECTION -->
+  <div id="levelScreen" class="screen">
+    <h1 id="levelTitle">Kelas 1 SD</h1>
+    <p class="subtitle">Pilih Tingkat Kesulitan:</p>
+    <div class="menu-grid" id="levelGrid"></div>
+    <button class="btn secondary" onclick="showClassSelection()">⬅️ Kembali ke Pilih Kelas</button>
+  </div>
+
+  <!-- SCREEN 4: GAME -->
   <div id="gameScreen" class="screen">
     <div class="game-header">
       <div class="user-info">
         <span class="av" id="gAvatar">🐯</span>
         <div>
           <div class="nm" id="gName">Player</div>
-          <div class="gr" id="gGrade">Kelas 1 SD</div>
+          <div class="gr" id="gGrade">Kelas 1 SD - Beginner</div>
         </div>
       </div>
       <button class="exit-btn" onclick="confirmExit()">✕ Keluar</button>
@@ -205,7 +224,7 @@
     <button class="btn next-btn hidden" id="nextBtn" onclick="goNext()">Lanjut →</button>
   </div>
 
-  <!-- GAME OVER -->
+  <!-- SCREEN 5: GAME OVER -->
   <div id="gameOverScreen" class="screen">
     <h1 id="goTitle">🎉 Selesai!</h1>
     <div class="stars" id="starsEl"></div>
@@ -216,40 +235,45 @@
       <p id="submitStatus" style="font-size:12px;color:#888;margin-top:6px;"></p>
     </div>
     <button class="btn" onclick="playAgain()">Main Lagi 🔄</button>
-    <button class="btn secondary" onclick="backToGrades()">Pilih Kelas Lain 📚</button>
+    <button class="btn secondary" onclick="backToLevels()">Pilih Level Lain 📚</button>
   </div>
 
 </div>
 
 <script>
 // ==================== KONFIGURASI ====================
-// GANTI dengan URL Web App Apps Script Anda (diakhiri /exec)
-const API_URL = 'https://script.google.com/macros/s/AKfycbyyp6rWmIR3I0li487YdELtoZt5T29IpnGQS1z9MbhTLIucSgDz27QqjvM631aN7B2zOA/exec';
+const API_URL = 'GANTI_DENGAN_URL_WEB_APP_APPS_SCRIPT_SD';
 
 // ==================== CONSTANTS ====================
 const AVATARS = ['🐯','🦁','🐼','🐸','🦊','🐨','🐧','🦄','🐙','🦋','🐵','🦉'];
-const GRADES = [
-  { id: 1, fase: 'A', desc: 'Bilangan 1–100, pola, bangun dasar' },
-  { id: 2, fase: 'A', desc: 'Operasi sampai 100, bangun ruang' },
-  { id: 3, fase: 'B', desc: 'Kali & bagi, pecahan sederhana, luas' },
-  { id: 4, fase: 'B', desc: 'Bilangan 10.000, pecahan senilai, data' },
-  { id: 5, fase: 'C', desc: 'Pecahan, desimal, KPK/FPB, rasio, sudut' },
-  { id: 6, fase: 'C', desc: 'Operasi campuran, luas gabungan, volume' }
+const CLASSES = [
+  { id: 1, desc: 'Bilangan 1-100, Pola, Bangun Dasar' },
+  { id: 2, desc: 'Operasi 100, Ukur, Bangun Ruang' },
+  { id: 3, desc: 'Kali & Bagi, Pecahan, Luas' },
+  { id: 4, desc: 'Bilangan 10.000, Data, Pecahan' },
+  { id: 5, desc: 'Pecahan, Desimal, KPK/FPB, Sudut' },
+  { id: 6, desc: 'Campuran, Luas Gabungan, Volume' }
+];
+const LEVELS = [
+  { id: 'beginner', name: 'Beginner', emoji: '🟢', desc: 'Soal dasar & hitungan langsung' },
+  { id: 'intermediate', name: 'Intermediate', emoji: '🟡', desc: 'Soal 2 langkah & campuran' },
+  { id: 'advanced', name: 'Advanced', emoji: '🔴', desc: 'Soal cerita & penalaran' }
 ];
 const TOTAL_QUESTIONS = 10;
 
 // ==================== STATE ====================
 let DB = { users: {}, currentUser: null };
 let selectedAvatar = AVATARS[0];
-let currentGrade = 1;
+let currentClass = 1;
+let currentLevel = 'beginner';
 let score = 0, questionIndex = 0, correctCount = 0;
 let currentQuestion = null, answerLocked = false, audioCtx;
 
 // ==================== STORAGE ====================
-function saveDB() { localStorage.setItem('mathGameSD_v5', JSON.stringify(DB)); }
+function saveDB() { localStorage.setItem('mathGameSD_v6', JSON.stringify(DB)); }
 function loadDB() {
   try {
-    const d = localStorage.getItem('mathGameSD_v5');
+    const d = localStorage.getItem('mathGameSD_v6');
     if (d) DB = JSON.parse(d);
   } catch(e) { DB = { users: {}, currentUser: null }; }
   if (!DB.users) DB.users = {};
@@ -262,10 +286,6 @@ function simplifyFrac(n, d) {
   const g = gcd(n, d); n /= g; d /= g;
   return d === 1 ? String(n) : `${n}/${d}`;
 }
-function getGradeLabel(id) {
-  const fase = id <= 2 ? 'A' : id <= 4 ? 'B' : 'C';
-  return `Kelas ${id} SD · Fase ${fase}`;
-}
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -274,10 +294,10 @@ function showScreen(id) {
 // ==================== QUESTION HELPERS ====================
 function numQ(t, a, s) { return { text: t, answer: String(a), type: 'numeric', solution: s || '' }; }
 function fracQ(t, n, d, s) { return { text: t, answer: simplifyFrac(n, d), type: 'fraction', solution: s || '' }; }
-function decQ(t, a, s) { return { text: t, answer: Number(a).toFixed(1), type: 'numeric_dec', solution: s || '' }; }
+function decQ(t, a, s) { return { text: t, answer: Number(a).toFixed(2), type: 'numeric_dec', solution: s || '' }; }
 function textQ(t, a, dist, s) { return { text: t, answer: a, type: 'text', distractors: dist, solution: s || '' }; }
 
-// ==================== AUTH ====================
+// ==================== AUTH & MENUS ====================
 function renderAuthScreen() {
   const avGrid = document.getElementById('avatarGrid');
   avGrid.innerHTML = '';
@@ -315,6 +335,7 @@ function renderAuthScreen() {
     document.getElementById('createTitle').textContent = 'Buat Pemain Pertama';
   }
 }
+
 function createUser() {
   const name = document.getElementById('nameInput').value.trim();
   if (!name) return alert('Masukkan nama kamu dulu ya!');
@@ -325,262 +346,142 @@ function createUser() {
   document.getElementById('nameInput').value = '';
   loginUser(name);
 }
+
 function loginUser(name) {
   DB.currentUser = name; saveDB();
-  document.getElementById('greetName').textContent = name;
-  showGradeSelection();
+  document.getElementById('greetNameClass').textContent = name;
+  showClassSelection();
 }
+
 function logout() {
   DB.currentUser = null; saveDB();
   showScreen('authScreen'); renderAuthScreen();
 }
-function showGradeSelection() {
-  const user = DB.users[DB.currentUser];
-  const grid = document.getElementById('gradeGrid');
+
+function showClassSelection() {
+  const grid = document.getElementById('classGrid');
   grid.innerHTML = '';
-  GRADES.forEach(g => {
+  CLASSES.forEach(c => {
     const btn = document.createElement('button');
-    btn.className = 'grade-btn';
-    const stat = user.stats[g.id];
-    const bestHtml = stat ? `<span class="best">⭐ Rekor: ${stat.best}</span>` : '';
-    btn.innerHTML = `<span class="grade-num">📘 Kelas ${g.id} SD</span><small>${g.desc}</small><span class="fase">Fase ${g.fase}</span>${bestHtml}`;
-    btn.onclick = () => startGame(g.id);
+    btn.className = 'menu-btn';
+    btn.innerHTML = `
+      <div class="grade-info">
+        <span class="grade-num">📘 Kelas ${c.id} SD</span>
+        <small>${c.desc}</small>
+      </div>
+      <div class="arrow">›</div>
+    `;
+    btn.onclick = () => showLevelSelection(c.id);
     grid.appendChild(btn);
   });
   document.getElementById('leaderboardArea').classList.add('hidden');
-  showScreen('gradeScreen');
+  showScreen('classScreen');
 }
 
-// ==================== QUESTION GENERATORS ====================
-function genKelas1() {
+function showLevelSelection(classId) {
+  currentClass = classId;
+  document.getElementById('levelTitle').textContent = `Kelas ${classId} SD`;
+  const user = DB.users[DB.currentUser];
+  const grid = document.getElementById('levelGrid');
+  grid.innerHTML = '';
+  
+  LEVELS.forEach(l => {
+    const statKey = `${classId}-${l.id}`;
+    const stat = user.stats[statKey];
+    const bestHtml = stat ? `<span class="best">⭐ Rekor: ${stat.best}</span>` : '';
+    
+    const btn = document.createElement('button');
+    btn.className = `menu-btn level-${l.id}`;
+    btn.innerHTML = `
+      <div class="grade-info">
+        <span class="grade-num">${l.emoji} ${l.name}</span>
+        <small>${l.desc}</small>
+        ${bestHtml}
+      </div>
+      <div class="arrow" style="color: inherit;">›</div>
+    `;
+    btn.onclick = () => startGame(classId, l.id);
+    grid.appendChild(btn);
+  });
+  showScreen('levelScreen');
+}
+
+// ==================== QUESTION GENERATORS (BANK SOAL SD) ====================
+
+function genBeginner(c) {
   const r = Math.random();
-  if (r < 0.30) { const a = randInt(1,10), b = randInt(1,10); return numQ(`${a} + ${b} = ?`, a+b, `Tambahkan:\n${a} + ${b} = ${a+b}`); }
-  if (r < 0.55) { const a = randInt(3,20), b = randInt(1,a); return numQ(`${a} − ${b} = ?`, a-b, `Kurangkan:\n${a} − ${b} = ${a-b}`); }
-  if (r < 0.68) {
-    const a = randInt(1,50), b = randInt(1,50);
-    const op = a > b ? '>' : a < b ? '<' : '=';
-    const desc = a > b ? 'lebih besar' : a < b ? 'lebih kecil' : 'sama dengan';
-    return textQ(`Isilah titik dengan tanda yang tepat:\n${a} ... ${b}`, op, ['>','<','='], `${a} ${desc} ${b}\nJadi ${a} ${op} ${b}`);
+  if (c === 1) {
+    if (r < 0.5) { const a = randInt(1, 10), b = randInt(1, 10); return numQ(`${a} + ${b} = ?`, a+b, `Tambahkan:\n${a} + ${b} = ${a+b}`); }
+    else { const a = randInt(3, 20), b = randInt(1, a); return numQ(`${a} − ${b} = ?`, a-b, `Kurangkan:\n${a} - ${b} = ${a-b}`); }
+  } else if (c === 2) {
+    if (r < 0.5) { const a = randInt(10, 50), b = randInt(10, 30); return numQ(`${a} + ${b} = ?`, a+b, `Jumlahkan:\n${a} + ${b} = ${a+b}`); }
+    else { const a = randInt(20, 99), b = randInt(10, a); return numQ(`${a} − ${b} = ?`, a-b, `Kurangkan:\n${a} - ${b} = ${a-b}`); }
+  } else if (c === 3) {
+    if (r < 0.5) { const a = randInt(2, 10), b = randInt(2, 5); return numQ(`${a} × ${b} = ?`, a*b, `Perkalian:\n${a} × ${b} = ${a*b}`); }
+    else { const b = randInt(2, 5), ans = randInt(2, 10); return numQ(`${b*ans} ÷ ${b} = ?`, ans, `Pembagian:\n${b} × ${ans} = ${b*ans}\nJadi ${b*ans} ÷ ${b} = ${ans}`); }
+  } else if (c === 4) {
+    if (r < 0.5) { const a = randInt(100, 500), b = randInt(100, 300); return numQ(`${a} + ${b} = ?`, a+b, `Jumlahkan:\n${a} + ${b} = ${a+b}`); }
+    else { const a = randInt(11, 20), b = randInt(2, 5); return numQ(`${a} × ${b} = ?`, a*b, `Perkalian:\n${a} × ${b} = ${a*b}`); }
+  } else if (c === 5) {
+    if (r < 0.5) { const d = randInt(3, 8); const a = randInt(1, d-1), b = randInt(1, d-1); return fracQ(`${a}/${d} + ${b}/${d} = ?`, a+b, d, `Penyebut sama (${d}):\n${a}/${d} + ${b}/${d} = ${a+b}/${d}`); }
+    else { const a = randInt(11, 40), b = randInt(11, 40); const sum = (a+b)/10; return decQ(`${(a/10).toFixed(1)} + ${(b/10).toFixed(1)} = ?`, sum, `${(a/10).toFixed(1)} + ${(b/10).toFixed(1)} = ${sum.toFixed(2)}`); }
+  } else { // Kelas 6
+    if (r < 0.5) { const a = randInt(2, 5), b = randInt(2, 10), c = randInt(1, 20); return numQ(`${a} × ${b} + ${c} = ?`, a*b+c, `Operasi campuran (kali dulu):\n(${a} × ${b}) + ${c}\n= ${a*b} + ${c} = ${a*b+c}`); }
+    else { const p = [10, 20, 25, 50][randInt(0, 3)]; const base = randInt(2, 10) * 10; return numQ(`${p}% dari ${base} = ?`, p*base/100, `${p}% = ${p}/100\n${p}/100 × ${base} = ${p*base/100}`); }
   }
-  if (r < 0.82) {
-    const step = randInt(2,5), start = randInt(1,5), last = start + step*3;
-    return numQ(`Lanjutkan pola:\n${start}, ${start+step}, ${start+step*2}, ${start+step*3}, ...`, last+step,
-      `Pola bertambah ${step}:\n${last} + ${step} = ${last+step}`);
-  }
-  if (r < 0.92) {
-    const shapes = [
-      { q: 'Bangun datar yang memiliki 3 sisi disebut...', a: 'Segitiga', d: ['Persegi','Lingkaran','Trapesium'], s: 'Segitiga memiliki 3 sisi dan 3 sudut.' },
-      { q: 'Bangun datar dengan 4 sisi sama panjang disebut...', a: 'Persegi', d: ['Segitiga','Lingkaran','Oval'], s: 'Persegi memiliki 4 sisi sama panjang dan 4 sudut siku-siku.' },
-      { q: 'Bangun datar berbentuk bulat penuh disebut...', a: 'Lingkaran', d: ['Persegi','Segitiga','Belah Ketupat'], s: 'Lingkaran berbentuk bulat penuh tanpa sudut.' },
-      { q: 'Bangun datar dengan 4 sisi (2 panjang, 2 pendek) disebut...', a: 'Persegi Panjang', d: ['Segitiga','Lingkaran','Persegi'], s: 'Persegi panjang memiliki 2 pasang sisi berhadapan yang sama panjang.' }
-    ];
-    const sh = shapes[randInt(0, 3)];
-    return textQ(sh.q, sh.a, sh.d, sh.s);
-  }
-  const nums = [randInt(1,30), randInt(31,60), randInt(61,100), randInt(101,150)];
-  const maxN = Math.max(...nums);
-  const sorted = [...nums].sort((a,b) => a-b);
-  return textQ(`Manakah bilangan terbesar?\n${nums.join(' , ')}`, String(maxN),
-    nums.filter(n => n !== maxN).map(String),
-    `Urutkan dari terkecil:\n${sorted.join(' < ')}\nTerbesar = ${maxN}`);
 }
 
-function genKelas2() {
+function genIntermediate(c) {
   const r = Math.random();
-  if (r < 0.28) { const a = randInt(10,60), b = randInt(10,40); return numQ(`${a} + ${b} = ?`, a+b, `${a} + ${b} = ${a+b}`); }
-  if (r < 0.52) { const a = randInt(20,99), b = randInt(10,a); return numQ(`${a} − ${b} = ?`, a-b, `${a} − ${b} = ${a-b}`); }
-  if (r < 0.65) {
-    const step = [5,10,100][randInt(0,2)];
-    const start = step * randInt(1,5);
-    const last = start + step*3;
-    return numQ(`Lanjutkan pola:\n${start}, ${start+step}, ${start+step*2}, ${start+step*3}, ...`, last+step, `Pola lompat ${step}:\n${last} + ${step} = ${last+step}`);
+  if (c === 1) {
+    if (r < 0.5) { const a = randInt(10, 40), b = randInt(10, 40); return numQ(`${a} + ${b} = ?`, a+b, `Jumlahkan:\n${a} + ${b} = ${a+b}`); }
+    else { const step = randInt(2, 5), start = randInt(1, 5); return numQ(`Pola: ${start}, ${start+step}, ${start+step*2}, ...\nAngka ke-4 = ?`, start+step*3, `Pola bertambah ${step}:\n${start+step*2} + ${step} = ${start+step*3}`); }
+  } else if (c === 2) {
+    if (r < 0.5) { const a = randInt(11, 30), b = randInt(11, 50); return numQ(`${a} × ${b} = ?`, a*b, `Perkalian:\n${a} × ${b} = ${a*b}`); }
+    else { const q = [ {q:'1 m = ... cm', a:'100', d:['10','1000','50'], s:'1 m = 100 cm'}, {q:'1 jam = ... menit', a:'60', d:['30','100','24'], s:'1 jam = 60 menit'}, {q:'1 kg = ... gram', a:'1000', d:['100','10','500'], s:'1 kg = 1000 gram'} ][randInt(0,2)]; return textQ(q.q, q.a, q.d, q.s); }
+  } else if (c === 3) {
+    if (r < 0.5) { const x = randInt(2, 20), a = randInt(2, 20); return numQ(`□ + ${a} = ${x+a}, maka □ = ?`, x, `□ = ${x+a} - ${a} = ${x}`); }
+    else { const s = randInt(3, 10); return numQ(`Persegi sisi ${s} cm.\nLuas = ... cm²`, s*s, `Luas = s × s = ${s} × ${s} = ${s*s}`); }
+  } else if (c === 4) {
+    if (r < 0.5) { const n = randInt(1, 4), d = randInt(n+1, 6), k = randInt(2, 3); return textQ(`Pecahan senilai dengan ${n}/${d} adalah...`, `${n*k}/${d*k}`, [`${n+1}/${d+1}`, `${n*k+1}/${d*k}`, `${n}/${d*k}`], `Kalikan pembilang & penyebut dengan ${k}:\n${n}/${d} = ${n*k}/${d*k}`); }
+    else { const p = randInt(5, 15), l = randInt(3, 10); return numQ(`Persegi panjang p=${p} cm, l=${l} cm.\nKeliling = ... cm`, 2*(p+l), `K = 2 × (p+l) = 2 × (${p}+${l}) = ${2*(p+l)}`); }
+  } else if (c === 5) {
+    if (r < 0.5) { const a = randInt(2, 6), b = randInt(2, 6); return numQ(`KPK dari ${a} dan ${b} = ?`, a*b/gcd(a,b), `KPK = (${a} × ${b}) ÷ FPB(${gcd(a,b)})\n= ${a*b} ÷ ${gcd(a,b)} = ${a*b/gcd(a,b)}`); }
+    else { const s1 = randInt(30, 80), s2 = randInt(30, 150-s1); return numQ(`Sudut segitiga: ${s1}° & ${s2}°.\nSudut ketiga = ...°`, 180-s1-s2, `180° - ${s1}° - ${s2}° = ${180-s1-s2}°`); }
+  } else { // Kelas 6
+    if (r < 0.5) { const ai = randInt(11, 45), b = randInt(2, 9); const a = ai/10; return decQ(`${a.toFixed(1)} × ${b} = ?`, a*b, `${ai} × ${b} = ${ai*b}\n${ai*b} ÷ 10 = ${(a*b).toFixed(2)}`); }
+    else { const a = randInt(4, 12), b = randInt(4, 12); return numQ(`KPK dari ${a} dan ${b} = ?`, a*b/gcd(a,b), `KPK = (${a} × ${b}) ÷ FPB(${gcd(a,b)})\n= ${a*b} ÷ ${gcd(a,b)} = ${a*b/gcd(a,b)}`); }
   }
-  if (r < 0.78) {
-    const q = [
-      { q: 'Kubus memiliki berapa sisi?', a: '6', d: ['4','8','12'], s: 'Kubus memiliki 6 sisi persegi sama besar.' },
-      { q: 'Balok memiliki berapa sisi?', a: '6', d: ['4','8','10'], s: 'Balok memiliki 6 sisi (3 pasang berhadapan).' },
-      { q: 'Bola memiliki berapa sisi datar?', a: '0', d: ['1','2','4'], s: 'Bola tidak memiliki sisi datar.' },
-      { q: 'Tabung memiliki berapa sisi lengkung?', a: '1', d: ['0','2','3'], s: 'Tabung memiliki 1 sisi lengkung, 2 sisi datar.' }
-    ][randInt(0,3)];
-    return textQ(q.q, q.a, q.d, q.s);
-  }
-  if (r < 0.90) {
-    const q = [
-      { q: '1 meter = ... cm', a: '100', d: ['10','1000','50'], s: '1 m = 100 cm' },
-      { q: '1 jam = ... menit', a: '60', d: ['30','100','24'], s: '1 jam = 60 menit' },
-      { q: '1 kg = ... gram', a: '1000', d: ['100','10','500'], s: '1 kg = 1000 gram' }
-    ][randInt(0,2)];
-    return textQ(q.q, q.a, q.d, q.s);
-  }
-  const nums = [randInt(50,90), randInt(91,150), randInt(151,300), randInt(301,500)];
-  const minN = Math.min(...nums);
-  const sorted = [...nums].sort((a,b) => a-b);
-  return textQ(`Manakah bilangan terkecil?\n${nums.join(' , ')}`, String(minN),
-    nums.filter(n => n !== minN).map(String),
-    `Urutkan: ${sorted.join(' < ')}\nTerkecil = ${minN}`);
 }
 
-function genKelas3() {
+function genAdvanced(c) {
   const r = Math.random();
-  if (r < 0.22) { const a = randInt(2,10), b = randInt(2,10); return numQ(`${a} × ${b} = ?`, a*b, `Tabel perkalian:\n${a} × ${b} = ${a*b}`); }
-  if (r < 0.42) {
-    const b = randInt(2,9), ans = randInt(2,10);
-    return numQ(`${b*ans} ÷ ${b} = ?`, ans, `Kebalikan perkalian:\n${b} × ${ans} = ${b*ans}\nJadi ${b*ans} ÷ ${b} = ${ans}`);
+  if (c === 1) {
+    if (r < 0.5) { const a = randInt(2, 5); return textQ(`Bangun datar dengan ${a} sisi disebut...`, a===3?'Segitiga':a===4?'Persegi':'Lingkaran', ['Persegi Panjang','Trapesium','Oval'], `Bangun dengan ${a} sisi adalah ${a===3?'Segitiga':a===4?'Persegi':'Lingkaran'}.`); }
+    else { const a = randInt(1, 15), b = randInt(1, 15); return textQ(`Manakah yang lebih besar? ${a} atau ${b}?`, a>b?String(a):String(b), [a>b?String(b):String(a), 'Sama besar', 'Tidak bisa ditentukan'], `Bandingkan: ${a} ${a>b?'>':'<'} ${b}`); }
+  } else if (c === 2) {
+    if (r < 0.5) { const q = [ {q:'Kubus memiliki berapa sisi?', a:'6', d:['4','8','12'], s:'Kubus = 6 sisi'}, {q:'Bola memiliki berapa sisi datar?', a:'0', d:['1','2','4'], s:'Bola tidak punya sisi datar'} ][randInt(0,1)]; return textQ(q.q, q.a, q.d, q.s); }
+    else { const apel = randInt(4, 6), pisang = randInt(1, 3); const emoji = (n, e) => e.repeat(n); return textQ(`Piktogram:\n🍎 ${emoji(apel,'🍎')}\n🍌 ${emoji(pisang,'🍌')}\nBuah apa yang paling banyak?`, 'Apel', ['Pisang', 'Sama banyak', 'Semua'], `Apel ada ${apel}, Pisang ada ${pisang}. Terbanyak Apel.`); }
+  } else if (c === 3) {
+    if (r < 0.5) { const den = [2, 3, 4][randInt(0,2)]; const whole = den * randInt(2, 5); return numQ(`Berapakah 1/${den} dari ${whole}?`, whole/den, `${whole} ÷ ${den} = ${whole/den}`); }
+    else { const a = randInt(10, 20), b = randInt(10, 20); return numQ(`Ali punya ${a} kelereng. Diberi Budi ${b} kelereng. Sisa kelereng Ali = ?`, a+b, `Kelereng Ali = ${a} + ${b} = ${a+b}`); }
+  } else if (c === 4) {
+    if (r < 0.5) { const p = randInt(10, 20), l = randInt(5, 10); return numQ(`Kebun p=${p}m, l=${l}m. Luas = ... m²`, p*l, `L = ${p} × ${l} = ${p*l} m²`); }
+    else { const a = randInt(2, 9), b = randInt(2, 9); return numQ(`Sebuah kotak berisi ${a*b} permen, dibagi rata ke ${a} anak.\nSetiap anak dapat = ?`, b, `${a*b} ÷ ${a} = ${b} permen`); }
+  } else if (c === 5) {
+    if (r < 0.5) { const p = randInt(3, 8), l = randInt(2, 5), t = randInt(2, 4); return numQ(`Balok p=${p}, l=${l}, t=${t}.\nVolume = ... cm³`, p*l*t, `V = ${p} × ${l} × ${t} = ${p*l*t}`); }
+    else { const j = randInt(30, 60), w = randInt(2, 4); return numQ(`Perjalanan ${j} km dalam ${w} jam.\nKecepatan = ... km/jam`, j/w, `K = ${j} ÷ ${w} = ${j/w} km/jam`); }
+  } else { // Kelas 6
+    if (r < 0.5) { const p = randInt(3, 8), l = randInt(2, 5), t = randInt(2, 4); return numQ(`Sebuah akuarium p=${p}dm, l=${l}dm, t=${t}dm.\nVolume air (penuh) = ... liter`, p*l*t, `V = ${p} × ${l} × ${t} = ${p*l*t} dm³\n1 dm³ = 1 liter`); }
+    else { const x = randInt(1, 5), y = randInt(1, 5); return textQ(`Titik (${x}, ${y}) berada di kuadran berapa?`, 'Kuadran I', ['Kuadran II','Kuadran III','Kuadran IV'], `x positif, y positif ⇒ Kuadran I`); }
   }
-  if (r < 0.55) {
-    const x = randInt(2,20), a = randInt(2,20);
-    if (Math.random() < 0.5) return numQ(`□ + ${a} = ${x+a}, maka □ = ?`, x, `□ = ${x+a} − ${a} = ${x}`);
-    return numQ(`□ − ${a} = ${x}, maka □ = ?`, x+a, `□ = ${x} + ${a} = ${x+a}`);
-  }
-  if (r < 0.68) {
-    const den = [2,3,4][randInt(0,2)], whole = den * randInt(2,6), ans = whole/den;
-    return numQ(`Berapakah 1/${den} dari ${whole}?`, ans, `1/${den} artinya dibagi ${den}:\n${whole} ÷ ${den} = ${ans}`);
-  }
-  if (r < 0.80) {
-    const s = randInt(2,8);
-    return numQ(`Persegi dengan sisi ${s} cm.\nLuasnya = ... cm²`, s*s, `Luas = sisi × sisi\n= ${s} × ${s} = ${s*s} cm²`);
-  }
-  if (r < 0.92) {
-    const q = [
-      { q: 'Segitiga memiliki berapa sisi?', a: '3', d: ['2','4','5'], s: 'Segitiga = 3 sisi.' },
-      { q: 'Persegi memiliki berapa sudut?', a: '4', d: ['3','5','6'], s: 'Persegi = 4 sudut siku-siku.' },
-      { q: 'Segitiga sama sisi memiliki berapa sudut sama besar?', a: '3', d: ['2','4','1'], s: 'Segitiga sama sisi = 3 sudut sama (60°).' }
-    ][randInt(0,2)];
-    return textQ(q.q, q.a, q.d, q.s);
-  }
-  const a = randInt(100,800), b = randInt(100,200);
-  return numQ(`${a} + ${b} = ?`, a+b, `${a} + ${b} = ${a+b}`);
 }
 
-function genKelas4() {
-  const r = Math.random();
-  if (r < 0.22) { const a = randInt(1000,5000), b = randInt(500,3000); return numQ(`${a} + ${b} = ?`, a+b, `${a} + ${b} = ${a+b}`); }
-  if (r < 0.40) {
-    const a = randInt(11,99), b = randInt(2,9);
-    const tens = Math.floor(a/10)*10, ones = a%10;
-    return numQ(`${a} × ${b} = ?`, a*b, `Pecah ${a} = ${tens} + ${ones}:\n${tens} × ${b} = ${tens*b}\n${ones} × ${b} = ${ones*b}\nJumlah = ${a*b}`);
-  }
-  if (r < 0.55) {
-    const b = randInt(3,9), ans = randInt(11,40);
-    return numQ(`${b*ans} ÷ ${b} = ?`, ans, `${b} × ${ans} = ${b*ans}\n${b*ans} ÷ ${b} = ${ans}`);
-  }
-  if (r < 0.68) {
-    const n = randInt(1,4), d = randInt(n+1,6), k = randInt(2,3);
-    return textQ(`Pecahan senilai dengan ${n}/${d} adalah...`, `${n*k}/${d*k}`,
-      [`${n+1}/${d+1}`, `${n*k+1}/${d*k}`, `${n}/${d*k}`],
-      `Kalikan pembilang & penyebut dengan ${k}:\n${n}/${d} = ${n*k}/${d*k}`);
-  }
-  if (r < 0.78) {
-    const x = randInt(5,30), a = randInt(2,9), b = randInt(1,20);
-    return numQ(`${a} × □ + ${b} = ${a*x+b}\nmaka □ = ?`, x,
-      `${a} × □ = ${a*x+b} − ${b} = ${a*x}\n□ = ${a*x} ÷ ${a} = ${x}`);
-  }
-  if (r < 0.88) {
-    const p = randInt(5,15), l = randInt(3,10);
-    if (Math.random() < 0.5) return numQ(`Persegi panjang p=${p} cm, l=${l} cm\nLuas = ... cm²`, p*l, `L = p × l = ${p} × ${l} = ${p*l} cm²`);
-    return numQ(`Persegi panjang p=${p} cm, l=${l} cm\nKeliling = ... cm`, 2*(p+l), `K = 2 × (p + l) = 2 × (${p} + ${l}) = ${2*(p+l)} cm`);
-  }
-  const apel = randInt(4,6), pisang = randInt(1,apel-1), mangga = randInt(1,apel-1);
-  const emoji = (n, e) => e.repeat(n);
-  return textQ(
-    `Piktogram buah (1 gambar = 1 buah):\n🍎 ${emoji(apel,'🍎')}\n🍌 ${emoji(pisang,'🍌')}\n🥭 ${emoji(mangga,'🥭')}\nBuah apa yang paling banyak?`,
-    'Apel', ['Pisang','Mangga','Semua sama'],
-    `Hitung:\nApel = ${apel}, Pisang = ${pisang}, Mangga = ${mangga}\nTerbanyak = Apel (${apel})`
-  );
-}
-
-function genKelas5() {
-  const r = Math.random();
-  if (r < 0.18) {
-    const d1 = randInt(2,6), d2 = d1*randInt(1,2);
-    const n1 = randInt(1,d1-1), n2 = randInt(1,d2-1);
-    const num = n1*d2 + n2*d1, den = d1*d2;
-    const simp = simplifyFrac(num, den);
-    return fracQ(`${n1}/${d1} + ${n2}/${d2} = ?`, num, den,
-      `Penyebut sama jadi ${den}:\n${n1*d2}/${den} + ${n2*d1}/${den} = ${num}/${den}${simp === `${num}/${den}` ? '' : ' = ' + simp}`);
-  }
-  if (r < 0.32) {
-    const d = randInt(2,8), a = randInt(2,d-1), b = randInt(1,a-1);
-    return fracQ(`${a}/${d} − ${b}/${d} = ?`, a-b, d, `${a}/${d} − ${b}/${d} = (${a-b})/${d}`);
-  }
-  if (r < 0.44) {
-    const ai = randInt(10,90), bi = randInt(10,90);
-    const a = ai/10, b = bi/10, sum = (ai+bi)/10;
-    return decQ(`${a.toFixed(1)} + ${b.toFixed(1)} = ?`, sum, `${a.toFixed(1)} + ${b.toFixed(1)} = ${sum.toFixed(1)}`);
-  }
-  if (r < 0.56) {
-    const a = randInt(2,6), b = randInt(2,6);
-    const kpk = a*b/gcd(a,b);
-    return numQ(`KPK dari ${a} dan ${b} adalah...`, kpk,
-      `Kelipatan ${a}: ${[1,2,3,4,5].map(k=>a*k).join(', ')}, ...\nKelipatan ${b}: ${[1,2,3,4,5].map(k=>b*k).join(', ')}, ...\nKPK = ${kpk}`);
-  }
-  if (r < 0.68) {
-    const g = randInt(2,6), a = g*randInt(2,4), b = g*randInt(2,4);
-    return numQ(`FPB dari ${a} dan ${b} adalah...`, gcd(a,b), `FPB = faktor terbesar bersama = ${gcd(a,b)}`);
-  }
-  if (r < 0.78) {
-    const k = randInt(2,5), ra = randInt(2,4), rb = randInt(2,4);
-    const a = ra*k, b = rb*k;
-    return numQ(`Jika a : b = ${ra} : ${rb}, dan a = ${a},\nmaka b = ?`, b,
-      `Skala = ${a} ÷ ${ra} = ${k}\nb = ${rb} × ${k} = ${b}`);
-  }
-  if (r < 0.88) {
-    const s1 = randInt(30,80), s2 = randInt(30,150-s1);
-    return numQ(`Segitiga memiliki sudut ${s1}° dan ${s2}°.\nSudut ketiga = ...°`, 180-s1-s2,
-      `Jumlah sudut = 180°\n${180}° − ${s1}° − ${s2}° = ${180-s1-s2}°`);
-  }
-  const sisi = randInt(5,15);
-  return numQ(`Persegi dengan sisi ${sisi} cm.\nLuas = ... cm²`, sisi*sisi, `L = ${sisi} × ${sisi} = ${sisi*sisi} cm²`);
-}
-
-function genKelas6() {
-  const r = Math.random();
-  if (r < 0.15) {
-    const d1 = randInt(3,8), d2 = randInt(3,8);
-    const n1 = randInt(1,d1-1), n2 = randInt(1,d2-1);
-    const num = n1*d2 + n2*d1, den = d1*d2;
-    const simp = simplifyFrac(num, den);
-    return fracQ(`${n1}/${d1} + ${n2}/${d2} = ?`, num, den,
-      `Penyebut = ${den}:\n${n1*d2}/${den} + ${n2*d1}/${den} = ${num}/${den}${simp === `${num}/${den}` ? '' : ' = ' + simp}`);
-  }
-  if (r < 0.28) {
-    const ai = randInt(11,45), b = randInt(2,9);
-    const a = ai/10, prod = (ai*b)/10;
-    return decQ(`${a.toFixed(1)} × ${b} = ?`, prod, `${ai} × ${b} = ${ai*b}\n${ai*b} ÷ 10 = ${prod.toFixed(1)}`);
-  }
-  if (r < 0.40) {
-    const a = randInt(4,12), b = randInt(4,12);
-    return numQ(`KPK dari ${a} dan ${b} adalah...`, a*b/gcd(a,b),
-      `KPK = (${a} × ${b}) ÷ FPB(${gcd(a,b)})\n= ${a*b} ÷ ${gcd(a,b)} = ${a*b/gcd(a,b)}`);
-  }
-  if (r < 0.52) {
-    const ra = randInt(2,8), rb = randInt(2,8), k = randInt(2,5);
-    const a = ra*k, b = rb*k;
-    return numQ(`Perbandingan apel : jeruk = ${ra} : ${rb}.\nJika ada ${a} apel, ada berapa jeruk?`, b,
-      `Skala = ${a} ÷ ${ra} = ${k}\nJeruk = ${rb} × ${k} = ${b}`);
-  }
-  if (r < 0.64) {
-    const p = randInt(6,12), l = randInt(3,6), s = randInt(2,5);
-    return numQ(`Bangun gabungan:\nPersegi panjang ${p}×${l} + persegi sisi ${s}.\nLuas total = ... cm²`, p*l + s*s,
-      `Luas PP = ${p} × ${l} = ${p*l}\nLuas persegi = ${s} × ${s} = ${s*s}\nTotal = ${p*l+s*s} cm²`);
-  }
-  if (r < 0.76) {
-    const s1 = randInt(40,90), s2 = randInt(40,130-s1);
-    return numQ(`Sudut segitiga: ${s1}° dan ${s2}°.\nSudut ketiga = ...°`, 180-s1-s2,
-      `180° − ${s1}° − ${s2}° = ${180-s1-s2}°`);
-  }
-  if (r < 0.88) {
-    const p = randInt(3,8), l = randInt(2,6), t = randInt(2,5);
-    return numQ(`Balok: panjang ${p} cm, lebar ${l} cm, tinggi ${t} cm.\nVolume = ... cm³`, p*l*t,
-      `V = p × l × t = ${p} × ${l} × ${t} = ${p*l*t} cm³`);
-  }
-  const x = randInt(1,8), y = randInt(1,8);
-  return textQ(`Titik (${x}, ${y}) berada di kuadran berapa?`, 'Kuadran I', ['Kuadran II','Kuadran III','Kuadran IV'],
-    `x = ${x} positif, y = ${y} positif ⇒ Kuadran I`);
-}
-
-function generateQuestion(g) {
-  return ({ 1: genKelas1, 2: genKelas2, 3: genKelas3, 4: genKelas4, 5: genKelas5, 6: genKelas6 }[g] || genKelas1)();
+function generateQuestion(c, l) {
+  if (l === 'beginner') return genBeginner(c);
+  if (l === 'intermediate') return genIntermediate(c);
+  if (l === 'advanced') return genAdvanced(c);
+  return genBeginner(c);
 }
 
 // ==================== OPTIONS ====================
@@ -597,6 +498,7 @@ function generateNumericOptions(n) {
   while (opts.size < 4) opts.add(String(n + opts.size));
   return [...opts].sort(() => Math.random() - 0.5);
 }
+
 function generateOptions(q) {
   const { answer, type } = q;
   if (type === 'text') return [answer, ...q.distractors].slice(0,4).sort(() => Math.random() - 0.5);
@@ -606,41 +508,43 @@ function generateOptions(q) {
     let t = 0;
     while (opts.size < 4 && t < 200) {
       t++;
-      const dd = randInt(2,9), nn = randInt(1, dd*2);
+      const dd = randInt(2, 9), nn = randInt(1, dd*2);
       const f = simplifyFrac(nn, dd);
       if (f !== answer && f.includes('/') && !f.startsWith('-')) opts.add(f);
     }
     while (opts.size < 4) opts.add(`${randInt(2,9)}/${randInt(3,9)}`);
     return [...opts].sort(() => Math.random() - 0.5);
   }
-  if (type === 'numeric_dec') {
+  if (answer.includes('.')) {
     const n = parseFloat(answer);
     const opts = new Set([answer]);
     let t = 0;
     while (opts.size < 4 && t < 100) {
       t++;
-      let off = randInt(1,15)/10;
+      let off = randInt(1, 15) / 10;
       if (Math.random() < 0.5) off = -off;
       const c = Math.round((n + off) * 10) / 10;
-      if (c >= 0 && c.toFixed(1) !== answer) opts.add(c.toFixed(1));
+      if (c >= 0) opts.add(c.toFixed(2));
     }
-    while (opts.size < 4) opts.add((n + opts.size*0.1).toFixed(1));
+    while (opts.size < 4) opts.add((n + opts.size * 0.1).toFixed(2));
     return [...opts].sort(() => Math.random() - 0.5);
   }
-  return generateNumericOptions(parseInt(answer));
+  return generateNumericOptions(parseInt(answer) || answer);
 }
 
 // ==================== GAME ====================
-function startGame(gradeId) {
-  currentGrade = gradeId;
+function startGame(classId, levelId) {
+  currentClass = classId;
+  currentLevel = levelId;
   score = 0; questionIndex = 0; correctCount = 0;
   const user = DB.users[DB.currentUser];
   document.getElementById('gAvatar').textContent = user.avatar;
   document.getElementById('gName').textContent = DB.currentUser;
-  document.getElementById('gGrade').textContent = getGradeLabel(gradeId);
+  document.getElementById('gGrade').textContent = `Kelas ${classId} SD - ${levelId.charAt(0).toUpperCase() + levelId.slice(1)}`;
   showScreen('gameScreen');
   nextQuestion();
 }
+
 function nextQuestion() {
   answerLocked = false;
   document.getElementById('feedbackEl').textContent = '';
@@ -648,7 +552,7 @@ function nextQuestion() {
   document.getElementById('solutionBox').classList.add('hidden');
   document.getElementById('nextBtn').classList.add('hidden');
 
-  currentQuestion = generateQuestion(currentGrade);
+  currentQuestion = generateQuestion(currentClass, currentLevel);
   const qEl = document.getElementById('questionEl');
   qEl.textContent = currentQuestion.text;
   qEl.classList.remove('long', 'very-long');
@@ -669,12 +573,14 @@ function nextQuestion() {
   });
   updateGameStats();
 }
+
 function updateGameStats() {
   document.getElementById('scoreEl').textContent = score;
   document.getElementById('qNumEl').textContent = `${Math.min(questionIndex+1, TOTAL_QUESTIONS)}/${TOTAL_QUESTIONS}`;
   document.getElementById('correctEl').textContent = correctCount;
   document.getElementById('progressFill').style.width = (questionIndex / TOTAL_QUESTIONS * 100) + '%';
 }
+
 function handleAnswer(btn, chosen) {
   if (answerLocked) return;
   answerLocked = true;
@@ -705,20 +611,23 @@ function handleAnswer(btn, chosen) {
   nextBtn.classList.remove('hidden');
   nextBtn.textContent = (questionIndex === TOTAL_QUESTIONS - 1) ? 'Lihat Hasil 🏁' : 'Lanjut →';
 }
+
 function goNext() {
   questionIndex++;
   if (questionIndex >= TOTAL_QUESTIONS) endGame();
   else nextQuestion();
 }
+
 function endGame() {
   const user = DB.users[DB.currentUser];
+  const statKey = `${currentClass}-${currentLevel}`;
   if (!user.stats) user.stats = {};
-  if (!user.stats[currentGrade]) user.stats[currentGrade] = { best: 0, plays: 0, correct: 0 };
-  const oldBest = user.stats[currentGrade].best || 0;
+  if (!user.stats[statKey]) user.stats[statKey] = { best: 0, plays: 0, correct: 0 };
+  const oldBest = user.stats[statKey].best || 0;
   const isNewBest = score > oldBest;
-  user.stats[currentGrade].plays++;
-  user.stats[currentGrade].correct += correctCount;
-  if (isNewBest) user.stats[currentGrade].best = score;
+  user.stats[statKey].plays++;
+  user.stats[statKey].correct += correctCount;
+  if (isNewBest) user.stats[statKey].best = score;
   user.totalGames = (user.totalGames || 0) + 1;
   saveDB();
 
@@ -733,11 +642,10 @@ function endGame() {
   document.getElementById('newBestMsg').classList.toggle('hidden', !(isNewBest && score > 0));
   document.getElementById('goTitle').textContent = ratio >= 0.7 ? '🎉 Hebat Sekali!' : ratio >= 0.4 ? '👍 Bagus!' : '💪 Ayo Coba Lagi!';
 
-  // Kirim ke Google Sheets
   const statusEl = document.getElementById('submitStatus');
   if (score > 0) {
     statusEl.textContent = '⏳ Mengirim skor ke peringkat global...';
-    kirimSkorKeSheets(DB.currentUser, currentGrade, score, correctCount, (ok) => {
+    kirimSkorKeSheets(DB.currentUser, `Kelas ${currentClass} - ${currentLevel}`, score, correctCount, (ok) => {
       statusEl.textContent = ok ? '✅ Skor terkirim ke peringkat global!' : '⚠️ Gagal mengirim skor (mungkin offline).';
     });
   } else {
@@ -746,51 +654,42 @@ function endGame() {
 
   showScreen('gameOverScreen');
 }
-function playAgain() { startGame(currentGrade); }
-function backToGrades() { showGradeSelection(); }
+
+function playAgain() { startGame(currentClass, currentLevel); }
+function backToLevels() { showLevelSelection(currentClass); }
 function confirmExit() {
-  if (confirm('Keluar dari permainan? Skor tidak akan disimpan.')) showGradeSelection();
+  if (confirm('Keluar dari permainan? Skor tidak akan disimpan.')) showLevelSelection(currentClass);
 }
 
 // ==================== LEADERBOARD API ====================
 function kirimSkorKeSheets(nama, kelas, skor, benar, callback) {
   if (!API_URL || API_URL.includes('GANTI_DENGAN')) {
-    console.warn('API_URL belum diset');
     if (callback) callback(false);
     return;
   }
-  const payload = JSON.stringify({
-    nama, kelas: `Kelas ${kelas} SD`, skor, benar
-  });
+  const payload = JSON.stringify({ nama, kelas, skor, benar });
   fetch(API_URL, {
     method: 'POST',
     mode: 'no-cors',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: payload
   }).then(() => { if (callback) callback(true); })
-    .catch(err => { console.warn('Kirim gagal:', err); if (callback) callback(false); });
+    .catch(err => { if (callback) callback(false); });
 }
 
 function muatLeaderboard(callback) {
-  if (!API_URL || API_URL.includes('GANTI_DENGAN')) {
-    callback(null);
-    return;
-  }
-  
+  if (!API_URL || API_URL.includes('GANTI_DENGAN')) { callback(null); return; }
   fetch(`${API_URL}?limit=20`)
     .then(res => res.json())
     .then(data => callback(data))
-    .catch(err => {
-      console.warn('Gagal memuat leaderboard:', err);
-      callback(null);
-    });
+    .catch(err => callback(null));
 }
+
 function tampilkanLeaderboard() {
   const area = document.getElementById('leaderboardArea');
   const list = document.getElementById('leaderboardList');
   area.classList.remove('hidden');
   list.innerHTML = '<p class="lb-empty">Memuat...</p>';
-  // Scroll ke area
   setTimeout(() => area.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
 
   muatLeaderboard(data => {
@@ -817,7 +716,7 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-// ==================== SOUND ====================
+// ==================== SOUND & INIT ====================
 function playSound(freq) {
   try {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -831,14 +730,12 @@ function playSound(freq) {
   } catch(e) {}
 }
 
-// ==================== SERVICE WORKER ====================
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('sw.js').catch(() => {});
   });
 }
 
-// ==================== INIT ====================
 loadDB();
 renderAuthScreen();
 document.getElementById('nameInput').addEventListener('keypress', e => {
