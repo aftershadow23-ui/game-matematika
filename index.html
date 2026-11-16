@@ -776,22 +776,15 @@ function muatLeaderboard(callback) {
     callback(null);
     return;
   }
-  const oldS = document.getElementById('jsonp-lb');
-  if (oldS) oldS.remove();
-  const cbName = 'lbCb_' + Date.now();
-  window[cbName] = function(data) {
-    callback(data);
-    delete window[cbName];
-    const s = document.getElementById('jsonp-lb');
-    if (s) s.remove();
-  };
-  const script = document.createElement('script');
-  script.id = 'jsonp-lb';
-  script.src = `${API_URL}?callback=${cbName}&limit=20`;
-  script.onerror = () => { callback(null); delete window[cbName]; script.remove(); };
-  document.body.appendChild(script);
+  
+  fetch(`${API_URL}?limit=20`)
+    .then(res => res.json())
+    .then(data => callback(data))
+    .catch(err => {
+      console.warn('Gagal memuat leaderboard:', err);
+      callback(null);
+    });
 }
-
 function tampilkanLeaderboard() {
   const area = document.getElementById('leaderboardArea');
   const list = document.getElementById('leaderboardList');
